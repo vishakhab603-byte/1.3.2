@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Library Management UI</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #eef3f8;
+    }
+
+    .app {
+      max-width: 900px;
+      margin: auto;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background: #1e4fd8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin: 0 0 10px 0;
+    }
+
+    .card p {
+      margin: 0 0 15px 0;
+      color: #555;
+    }
+
+    .remove {
+      background: #dc2626;
+    }
+
+    .remove:hover {
+      background: #b91c1c;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [books, setBooks] = React.useState([
+        { id: 1, title: "React Basics", author: "Dan Abramov" },
+        { id: 2, title: "JavaScript Guide", author: "MDN" },
+        { id: 3, title: "Web Development", author: "Jon Duckett" }
+      ]);
+
+      const [search, setSearch] = React.useState("");
+      const [title, setTitle] = React.useState("");
+      const [author, setAuthor] = React.useState("");
+
+      const filteredBooks = books.filter(book =>
+        book.title.toLowerCase().includes(search.toLowerCase())
+      );
+
+      function addBook() {
+        if (!title || !author) return;
+        setBooks([
+          ...books,
+          { id: Date.now(), title, author }
+        ]);
+        setTitle("");
+        setAuthor("");
+      }
+
+      function removeBook(id) {
+        setBooks(books.filter(book => book.id !== id));
+      }
+
+      return (
+        <div className="app">
+          <h1>📚 Library Management</h1>
+
+          <div className="controls">
+            <input
+              placeholder="Search books..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <input
+              placeholder="Book title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <input
+              placeholder="Author name"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
+            <button onClick={addBook}>Add Book</button>
+          </div>
+
+          <div className="grid">
+            {filteredBooks.map(book => (
+              <div className="card" key={book.id}>
+                <h3>{book.title}</h3>
+                <p>Author: {book.author}</p>
+                <button className="remove" onClick={() => removeBook(book.id)}>
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
